@@ -1,3 +1,4 @@
+
 package com.alibbalci.isgmobil.navigation
 
 object Routes {
@@ -11,6 +12,7 @@ object Routes {
 
     const val COMPANY_LIST = "company_list"
     const val COMPANY_CREATE = "company_create"
+    const val COMPANY_DETAIL = "company_detail"
 
     const val OBSERVATION_LIST = "observation_list"
     const val OBSERVATION_CREATE = "observation_create"
@@ -20,3 +22,4 @@ object Routes {
 
     const val PROFILE = "profile"
 }
+

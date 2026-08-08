@@ -1,7 +1,9 @@
 package com.alibbalci.isgmobil.core.di
 
 import com.alibbalci.isgmobil.data.repository.AuthRepositoryImpl
+import com.alibbalci.isgmobil.data.repository.CompanyRepositoryImpl
 import com.alibbalci.isgmobil.domain.repository.AuthRepository
+import com.alibbalci.isgmobil.domain.repository.CompanyRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,4 +19,10 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCompanyRepository(
+        impl: CompanyRepositoryImpl
+    ): CompanyRepository
 }

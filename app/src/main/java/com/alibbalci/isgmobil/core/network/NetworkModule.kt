@@ -1,6 +1,7 @@
 package com.alibbalci.isgmobil.core.network
 
 import com.alibbalci.isgmobil.data.remote.api.AuthApi
+import com.alibbalci.isgmobil.data.remote.api.CompanyApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -56,5 +57,13 @@ object NetworkModule {
         retrofit: Retrofit
     ): AuthApi {
         return retrofit.create(AuthApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanyApi(
+        retrofit: Retrofit
+    ): CompanyApi {
+        return retrofit.create(CompanyApi::class.java)
     }
 }

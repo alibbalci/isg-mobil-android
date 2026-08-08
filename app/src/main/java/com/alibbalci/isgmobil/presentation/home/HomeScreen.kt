@@ -1,5 +1,5 @@
-package com.alibbalci.isgmobil.presentation.home
 
+package com.alibbalci.isgmobil.presentation.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun HomeScreen(
+    onNavigateToCompanies: () -> Unit,
     onLogout: () -> Unit
 ) {
     Column(
@@ -21,13 +22,26 @@ fun HomeScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.Center
     ) {
+
         Text(text = "Ana Sayfa")
 
         Button(
+            onClick = onNavigateToCompanies,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        ) {
+            Text(text = "Şirketlerim")
+        }
+
+        Button(
             onClick = onLogout,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp)
         ) {
             Text(text = "Çıkış Yap")
         }
     }
 }
+
