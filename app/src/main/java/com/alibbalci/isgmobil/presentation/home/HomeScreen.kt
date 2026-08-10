@@ -1,5 +1,5 @@
-
 package com.alibbalci.isgmobil.presentation.home
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun HomeScreen(
     onNavigateToCompanies: () -> Unit,
+    onNavigateToObservationCreate: () -> Unit,
     onLogout: () -> Unit
 ) {
     Column(
@@ -35,6 +36,15 @@ fun HomeScreen(
         }
 
         Button(
+            onClick = onNavigateToObservationCreate,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp)
+        ) {
+            Text(text = "Yeni Gözlem")
+        }
+
+        Button(
             onClick = onLogout,
             modifier = Modifier
                 .fillMaxWidth()
@@ -44,4 +54,3 @@ fun HomeScreen(
         }
     }
 }
-

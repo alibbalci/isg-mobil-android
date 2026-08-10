@@ -2,6 +2,7 @@ package com.alibbalci.isgmobil.core.network
 
 import com.alibbalci.isgmobil.data.remote.api.AuthApi
 import com.alibbalci.isgmobil.data.remote.api.CompanyApi
+import com.alibbalci.isgmobil.data.remote.api.ObservationApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -12,6 +13,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import java.util.concurrent.TimeUnit
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,8 +33,12 @@ object NetworkModule {
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
+
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(120, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
             .build()
     }
 
@@ -66,4 +72,13 @@ object NetworkModule {
     ): CompanyApi {
         return retrofit.create(CompanyApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideObservationApi(
+        retrofit: Retrofit
+    ): ObservationApi {
+        return retrofit.create(ObservationApi::class.java)
+    }
+
 }

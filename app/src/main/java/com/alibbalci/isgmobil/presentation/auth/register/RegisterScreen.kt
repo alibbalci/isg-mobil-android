@@ -1,40 +1,53 @@
 package com.alibbalci.isgmobil.presentation.auth.register
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alibbalci.isgmobil.presentation.auth.components.AuthDivider
+import com.alibbalci.isgmobil.presentation.auth.components.AuthHeader
+import com.alibbalci.isgmobil.presentation.auth.components.AuthPasswordField
+import com.alibbalci.isgmobil.presentation.auth.components.AuthPrimaryButton
+import com.alibbalci.isgmobil.presentation.auth.components.AuthSecondaryButton
+import com.alibbalci.isgmobil.presentation.auth.components.AuthTextField
 
 @Composable
 fun RegisterScreen(
     viewModel: RegisterViewModel,
     onNavigateToLogin: () -> Unit
 ) {
+
     val uiState by viewModel.uiState
         .collectAsStateWithLifecycle()
 
+    /*
+     * KAYIT BAŞARILI OLUNCA
+     * LOGIN EKRANINA DÖN
+     */
     LaunchedEffect(viewModel) {
+
         viewModel.effect.collect { effect ->
+
             when (effect) {
+
                 RegisterEffect.NavigateToLogin -> {
                     onNavigateToLogin()
                 }
@@ -45,122 +58,164 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "Kayıt Ol")
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = uiState.fullName,
-            onValueChange = viewModel::onFullNameChange,
-            label = {
-                Text(text = "Ad Soyad")
-            },
-            isError = uiState.fullNameError != null,
-            supportingText = {
-                uiState.fullNameError?.let { error ->
-                    Text(text = error)
-                }
-            },
-            enabled = !uiState.isLoading,
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = uiState.email,
-            onValueChange = viewModel::onEmailChange,
-            label = {
-                Text(text = "E-posta")
-            },
-            isError = uiState.emailError != null,
-            supportingText = {
-                uiState.emailError?.let { error ->
-                    Text(text = error)
-                }
-            },
-            enabled = !uiState.isLoading,
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = uiState.password,
-            onValueChange = viewModel::onPasswordChange,
-            label = {
-                Text(text = "Şifre")
-            },
-            isError = uiState.passwordError != null,
-            supportingText = {
-                uiState.passwordError?.let { error ->
-                    Text(text = error)
-                }
-            },
-            visualTransformation =
-                if (uiState.isPasswordVisible) {
-                    VisualTransformation.None
-                } else {
-                    PasswordVisualTransformation()
-                },
-            trailingIcon = {
-                TextButton(
-                    onClick = viewModel::togglePasswordVisibility
-                ) {
-                    Text(
-                        text =
-                            if (uiState.isPasswordVisible) {
-                                "Gizle"
-                            } else {
-                                "Göster"
-                            }
-                    )
-                }
-            },
-            enabled = !uiState.isLoading,
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        uiState.generalError?.let { error ->
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error
+            .background(Color.White)
+            .verticalScroll(
+                rememberScrollState()
             )
-        }
+    ) {
 
-        Spacer(modifier = Modifier.height(24.dp))
+        /*
+         * HEADER
+         */
+        AuthHeader(
+            title = "Hesabınızı\nOluşturun",
+            subtitle = "İş güvenliğini birlikte daha güçlü hale getirin"
+        )
 
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !uiState.isLoading,
-            onClick = viewModel::register
-        ) {
-            if (uiState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(22.dp),
-                    strokeWidth = 2.dp
+        /*
+         * FORM
+         */
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 28.dp,
+                    vertical = 28.dp
                 )
-            } else {
-                Text(text = "Kayıt Ol")
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !uiState.isLoading,
-            onClick = onNavigateToLogin
         ) {
-            Text(text = "Zaten hesabın var mı? Giriş yap")
+
+            /*
+             * AD SOYAD
+             */
+            AuthTextField(
+                label = "Ad Soyad",
+                value = uiState.fullName,
+                placeholder = "Adınızı ve soyadınızı girin",
+                icon = Icons.Default.Person,
+                enabled = !uiState.isLoading,
+                error = uiState.fullNameError,
+                keyboardType = KeyboardType.Text,
+                onValueChange =
+                    viewModel::onFullNameChange
+            )
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            /*
+             * E-POSTA
+             */
+            AuthTextField(
+                label = "E-posta Adresi",
+                value = uiState.email,
+                placeholder = "ornek@sirket.com",
+                icon = Icons.Default.MailOutline,
+                enabled = !uiState.isLoading,
+                error = uiState.emailError,
+                keyboardType = KeyboardType.Email,
+                onValueChange =
+                    viewModel::onEmailChange
+            )
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            /*
+             * ŞİFRE
+             */
+            AuthPasswordField(
+                value = uiState.password,
+                isPasswordVisible =
+                    uiState.isPasswordVisible,
+                enabled = !uiState.isLoading,
+                error = uiState.passwordError,
+                onValueChange =
+                    viewModel::onPasswordChange,
+                onVisibilityClick =
+                    viewModel::togglePasswordVisibility
+            )
+
+            /*
+             * GENEL HATA
+             */
+            uiState.generalError?.let { error ->
+
+                Spacer(
+                    modifier = Modifier.height(10.dp)
+                )
+
+                Text(
+                    text = error,
+                    color =
+                        MaterialTheme
+                            .colorScheme
+                            .error,
+                    style =
+                        MaterialTheme
+                            .typography
+                            .bodyMedium
+                )
+            }
+
+            Spacer(
+                modifier = Modifier.height(22.dp)
+            )
+
+            /*
+             * KAYIT OL
+             */
+            AuthPrimaryButton(
+                text = "Hesap Oluştur",
+                isLoading = uiState.isLoading,
+                enabled = true,
+                onClick = viewModel::register
+            )
+
+            Spacer(
+                modifier = Modifier.height(22.dp)
+            )
+
+            /*
+             * VEYA
+             */
+            AuthDivider()
+
+            Spacer(
+                modifier = Modifier.height(22.dp)
+            )
+
+            /*
+             * LOGIN
+             */
+            AuthSecondaryButton(
+                text = "Zaten Hesabım Var",
+                enabled = !uiState.isLoading,
+                onClick = onNavigateToLogin
+            )
+
+            Spacer(
+                modifier = Modifier.height(24.dp)
+            )
+
+            /*
+             * ALT BİLGİ
+             */
+            Text(
+                text =
+                    "Hesap oluşturarak Kullanım Koşullarını kabul etmiş olursunuz.",
+                style =
+                    MaterialTheme
+                        .typography
+                        .bodySmall,
+                modifier =
+                    Modifier.fillMaxWidth()
+            )
+
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
         }
     }
 }
