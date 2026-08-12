@@ -6,6 +6,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
 
     val userName: String = "",
+    val userRole: String = "",
 
     val totalObservations: Int = 0,
     val highRiskCount: Int = 0,

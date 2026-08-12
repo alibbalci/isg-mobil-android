@@ -3,6 +3,7 @@ package com.alibbalci.isgmobil.core.network
 import com.alibbalci.isgmobil.data.remote.api.AuthApi
 import com.alibbalci.isgmobil.data.remote.api.CompanyApi
 import com.alibbalci.isgmobil.data.remote.api.ObservationApi
+import com.alibbalci.isgmobil.data.remote.api.UserApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -79,6 +80,16 @@ object NetworkModule {
         retrofit: Retrofit
     ): ObservationApi {
         return retrofit.create(ObservationApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserApi(
+        retrofit: Retrofit
+    ): UserApi {
+        return retrofit.create(
+            UserApi::class.java
+        )
     }
 
 }

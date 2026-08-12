@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alibbalci.isgmobil.domain.model.Observation
 import com.alibbalci.isgmobil.domain.usecase.observation.GetObservationsUseCase
-import com.alibbalci.isgmobil.presentation.session.SessionViewModel
+import com.alibbalci.isgmobil.domain.usecase.user.GetCurrentUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getObservationsUseCase: GetObservationsUseCase
 ) : ViewModel() {
 
@@ -39,42 +41,70 @@ class HomeViewModel @Inject constructor(
                     errorMessage = null
                 )
 
-            getObservationsUseCase(
-                page = 0,
-                size = 100
+            val userDeferred = async {
+                getCurrentUserUseCase()
+            }
+
+            val observationsDeferred = async {
+                getObservationsUseCase(
+                    page = 0,
+                    size = 100
+                )
+            }
+
+            val userResult =
+                userDeferred.await()
+
+            val observationsResult =
+                observationsDeferred.await()
+
+            val user =
+                userResult.getOrNull()
+
+            val observations =
+                observationsResult.getOrElse {
+                    emptyList()
+                }
+
+            updateDashboard(
+                userName =
+                    user?.fullName.orEmpty(),
+
+                userRole =
+                    user?.role.orEmpty(),
+
+                observations =
+                    observations,
+
+                errorMessage =
+                    when {
+
+                        userResult.isFailure ->
+                            "Kullanıcı bilgileri alınamadı."
+
+                        observationsResult.isFailure ->
+                            "Gözlem bilgileri alınamadı."
+
+                        else -> null
+                    }
             )
-                .onSuccess { observations ->
-
-                    updateDashboard(
-                        observations
-                    )
-                }
-                .onFailure { exception ->
-
-                    _uiState.value =
-                        _uiState.value.copy(
-                            isLoading = false,
-                            errorMessage =
-                                exception.message
-                                    ?: "Ana sayfa verileri alınamadı."
-                        )
-                }
         }
     }
 
     private fun updateDashboard(
-        observations: List<Observation>
+        userName: String,
+        userRole: String,
+        observations: List<Observation>,
+        errorMessage: String?
     ) {
-
-        val userName =
-            observations
-                .firstOrNull()
-                ?.userFullName
-                .orEmpty()
 
         val totalObservations =
             observations.size
 
+        /*
+         * Yüksek riskli:
+         * sadece HIGH
+         */
         val highRiskCount =
             observations.count { observation ->
 
@@ -85,6 +115,9 @@ class HomeViewModel @Inject constructor(
                     ) == true
             }
 
+        /*
+         * Henüz tamamlanmamış gözlemler
+         */
         val pendingCount =
             observations.count { observation ->
 
@@ -97,6 +130,9 @@ class HomeViewModel @Inject constructor(
                 )
             }
 
+        /*
+         * APPROVED = tamamlandı
+         */
         val resolvedCount =
             observations.count { observation ->
 
@@ -107,6 +143,9 @@ class HomeViewModel @Inject constructor(
                     ) == true
             }
 
+        /*
+         * En son 3 gözlem
+         */
         val recentObservations =
             observations
                 .sortedByDescending {
@@ -117,13 +156,27 @@ class HomeViewModel @Inject constructor(
         _uiState.value =
             HomeUiState(
                 isLoading = false,
+
                 userName = userName,
-                totalObservations = totalObservations,
-                highRiskCount = highRiskCount,
-                pendingCount = pendingCount,
-                resolvedCount = resolvedCount,
-                recentObservations = recentObservations,
-                errorMessage = null
+                userRole = userRole,
+
+                totalObservations =
+                    totalObservations,
+
+                highRiskCount =
+                    highRiskCount,
+
+                pendingCount =
+                    pendingCount,
+
+                resolvedCount =
+                    resolvedCount,
+
+                recentObservations =
+                    recentObservations,
+
+                errorMessage =
+                    errorMessage
             )
     }
 }

@@ -33,6 +33,7 @@ import com.alibbalci.isgmobil.presentation.observation.create.ObservationCreateS
 import com.alibbalci.isgmobil.presentation.observation.create.ObservationCreateViewModel
 import com.alibbalci.isgmobil.presentation.observation.list.ObservationListScreen
 import com.alibbalci.isgmobil.presentation.profile.ProfileScreen
+import com.alibbalci.isgmobil.presentation.profile.ProfileViewModel
 import com.alibbalci.isgmobil.presentation.session.SessionViewModel
 import com.alibbalci.isgmobil.presentation.splash.SplashScreen
 import com.alibbalci.isgmobil.session.SessionState
@@ -121,7 +122,7 @@ fun AppNavigation(
             observationListScreen()
             observationCreateScreen(navController)
 
-            profileScreen()
+            profileScreen(navController)
         }
     }
 }
@@ -272,6 +273,7 @@ private fun NavGraphBuilder.homeScreen(
             hiltViewModel()
 
         HomeScreen(
+            viewModel = homeViewModel,
             onNavigateToCompanies = {
 
                 navController.navigate(
@@ -297,28 +299,6 @@ private fun NavGraphBuilder.homeScreen(
                 ) {
                     launchSingleTop = true
                 }
-            },
-
-            onLogout = {
-
-                homeViewModel.logout(
-
-                    onLogoutSuccess = {
-
-                        navController.navigate(
-                            Routes.LOGIN
-                        ) {
-
-                            popUpTo(
-                                navController.graph.id
-                            ) {
-                                inclusive = true
-                            }
-
-                            launchSingleTop = true
-                        }
-                    }
-                )
             }
         )
     }
@@ -468,12 +448,41 @@ private fun NavGraphBuilder.observationCreateScreen(
 /*
  * PROFILE
  */
-private fun NavGraphBuilder.profileScreen() {
+private fun NavGraphBuilder.profileScreen(
+    navController: NavHostController
+) {
 
     composable(
         route = Routes.PROFILE
     ) {
 
-        ProfileScreen()
+        val profileViewModel: ProfileViewModel =
+            hiltViewModel()
+
+        ProfileScreen(
+            viewModel = profileViewModel,
+
+            onLogout = {
+
+                profileViewModel.logout(
+
+                    onLogoutSuccess = {
+
+                        navController.navigate(
+                            Routes.LOGIN
+                        ) {
+
+                            popUpTo(
+                                navController.graph.id
+                            ) {
+                                inclusive = true
+                            }
+
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+        )
     }
 }

@@ -31,7 +31,7 @@ import com.alibbalci.isgmobil.ui.theme.Orange
 fun HomeHeader(
     userName: String,
     role: String,
-    companyName: String
+
 ) {
 
     Box(
@@ -125,7 +125,7 @@ fun HomeHeader(
                         )
 
                         Text(
-                            text = "$role · $companyName",
+                            text = role,
                             color = Color.White.copy(alpha = 0.65f),
                             fontSize = 12.sp
                         )
