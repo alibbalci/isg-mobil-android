@@ -290,6 +290,15 @@ private fun NavGraphBuilder.homeScreen(
                 }
             },
 
+            onNavigateToObservations = {
+
+                navController.navigate(
+                    Routes.OBSERVATION_LIST
+                ) {
+                    launchSingleTop = true
+                }
+            },
+
             onLogout = {
 
                 homeViewModel.logout(
