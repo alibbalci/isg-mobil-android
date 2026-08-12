@@ -2,6 +2,7 @@ package com.alibbalci.isgmobil.data.repository
 
 import com.alibbalci.isgmobil.data.mapper.toDomain
 import com.alibbalci.isgmobil.data.remote.api.ObservationApi
+import com.alibbalci.isgmobil.domain.model.Observation
 import com.alibbalci.isgmobil.domain.model.ObservationAnalysis
 import com.alibbalci.isgmobil.domain.repository.ObservationRepository
 import okhttp3.MultipartBody
@@ -24,6 +25,25 @@ class ObservationRepositoryImpl @Inject constructor(
                     companyId = companyId
                 )
                 .toDomain()
+        }
+    }
+
+    override suspend fun getObservations(
+        page: Int,
+        size: Int
+    ): Result<List<Observation>> {
+
+        return runCatching {
+
+            observationApi
+                .getObservations(
+                    page = page,
+                    size = size
+                )
+                .content
+                .map { observationDto ->
+                    observationDto.toDomain()
+                }
         }
     }
 }
