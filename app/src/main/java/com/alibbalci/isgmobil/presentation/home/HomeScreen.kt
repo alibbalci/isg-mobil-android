@@ -3,12 +3,15 @@ package com.alibbalci.isgmobil.presentation.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -39,6 +42,10 @@ import com.alibbalci.isgmobil.presentation.home.components.RecentObservationCard
 import com.alibbalci.isgmobil.presentation.home.components.StatCard
 import com.alibbalci.isgmobil.ui.theme.Navy
 import com.alibbalci.isgmobil.ui.theme.Orange
+import com.alibbalci.isgmobil.ui.theme.AppBackground
+import com.alibbalci.isgmobil.ui.theme.RiskRed
+import com.alibbalci.isgmobil.ui.theme.RiskYellow
+import com.alibbalci.isgmobil.ui.theme.SuccessGreen
 import com.alibbalci.isgmobil.ui.theme.TextSecondary
 
 @Composable
@@ -55,7 +62,7 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(AppBackground)
             .verticalScroll(
                 rememberScrollState()
             )
@@ -77,6 +84,8 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .widthIn(max = 840.dp)
+                .align(Alignment.CenterHorizontally)
                 .padding(
                     horizontal = 16.dp
                 )
@@ -135,14 +144,27 @@ fun HomeScreen(
                 )
             }
 
+            Spacer(
+                modifier = Modifier.size(8.dp)
+            )
+
             /*
              * İSTATİSTİKLER
              */
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement =
-                    Arrangement.spacedBy(10.dp)
-            ) {
+            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                val useSingleColumn = maxWidth < 360.dp
+
+                if (useSingleColumn) {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        StatCard(uiState.totalObservations.toString(), "Toplam GÃ¶zlem", Navy, Icons.Default.Description)
+                        StatCard(uiState.highRiskCount.toString(), "YÃ¼ksek Riskli", RiskRed, Icons.Default.Warning)
+                        StatCard(uiState.pendingCount.toString(), "Beklemede", RiskYellow, Icons.Default.Schedule)
+                        StatCard(uiState.resolvedCount.toString(), "Ã‡Ã¶zÃ¼ldÃ¼", SuccessGreen, Icons.Default.CheckCircle)
+                    }
+                } else Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
 
                 Column(
                     modifier = Modifier.weight(1f)
@@ -169,7 +191,7 @@ fun HomeScreen(
                                 .toString(),
                         title = "Beklemede",
                         backgroundColor =
-                            Color(0xFFFF7A30),
+                            RiskYellow,
                         icon =
                             Icons.Default.Schedule
                     )
@@ -185,7 +207,7 @@ fun HomeScreen(
                                 .toString(),
                         title = "Yüksek Riskli",
                         backgroundColor =
-                            Color(0xFFEF2D35),
+                            RiskRed,
                         icon =
                             Icons.Default.Warning
                     )
@@ -201,10 +223,11 @@ fun HomeScreen(
                                 .toString(),
                         title = "Çözüldü",
                         backgroundColor =
-                            Color(0xFF1EB855),
+                            SuccessGreen,
                         icon =
                             Icons.Default.CheckCircle
                     )
+                }
                 }
             }
 

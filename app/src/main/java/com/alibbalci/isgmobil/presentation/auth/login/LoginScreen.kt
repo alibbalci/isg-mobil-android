@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -30,6 +32,7 @@ import com.alibbalci.isgmobil.presentation.auth.components.AuthPrimaryButton
 import com.alibbalci.isgmobil.presentation.auth.components.AuthSecondaryButton
 import com.alibbalci.isgmobil.presentation.auth.components.AuthTextField
 import com.alibbalci.isgmobil.ui.theme.Orange
+import com.alibbalci.isgmobil.ui.theme.AppBackground
 
 @Composable
 fun LoginScreen(
@@ -60,7 +63,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(AppBackground)
             .verticalScroll(
                 rememberScrollState()
             )
@@ -80,6 +83,8 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .widthIn(max = 600.dp)
+                .align(Alignment.CenterHorizontally)
                 .padding(
                     horizontal = 28.dp,
                     vertical = 28.dp

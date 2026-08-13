@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.alibbalci.isgmobil.domain.model.Company
 import com.alibbalci.isgmobil.domain.usecase.company.GetCompaniesUseCase
 import com.alibbalci.isgmobil.domain.usecase.observation.AnalyzeObservationUseCase
+import com.alibbalci.isgmobil.domain.usecase.observation.ConfirmObservationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ObservationCreateViewModel @Inject constructor(
     private val getCompaniesUseCase: GetCompaniesUseCase,
-    private val analyzeObservationUseCase: AnalyzeObservationUseCase
+    private val analyzeObservationUseCase: AnalyzeObservationUseCase,
+    private val confirmObservationUseCase: ConfirmObservationUseCase
 ) : ViewModel() {
 
     private val _uiState =
@@ -155,6 +157,65 @@ class ObservationCreateViewModel @Inject constructor(
                 errorMessage = null
             )
     }
+
+    fun confirmObservation() {
+        val currentState = _uiState.value
+
+        val observationId = currentState.analysisResult?.observationId
+        val selectedRiskCode = currentState.selectedRiskCode
+        val description = currentState.analysisResult?.aiDescription
+
+        if (observationId == null) {
+            _uiState.value = currentState.copy(
+                confirmationError = "Onaylanacak gözlem bulunamadı."
+            )
+            return
+        }
+
+        if (selectedRiskCode.isNullOrBlank()) {
+            _uiState.value = currentState.copy(
+                confirmationError = "Lütfen bir risk seçin."
+            )
+            return
+        }
+
+        if (currentState.isConfirming) {
+            return
+        }
+
+        viewModelScope.launch {
+
+            _uiState.value = _uiState.value.copy(
+                isConfirming = true,
+                confirmationError = null,
+                confirmationSuccess = false
+            )
+
+            try {
+                confirmObservationUseCase(
+                    observationId = observationId,
+                    description = description.orEmpty(),
+                    selectedRiskCode = selectedRiskCode
+                )
+
+                _uiState.value = _uiState.value.copy(
+                    isConfirming = false,
+                    confirmationSuccess = true,
+                    confirmationError = null
+                )
+
+            } catch (e: Exception) {
+
+                _uiState.value = _uiState.value.copy(
+                    isConfirming = false,
+                    confirmationSuccess = false,
+                    confirmationError = e.message ?: "Gözlem onaylanamadı."
+                )
+            }
+        }
+    }
+
+
 
 
 

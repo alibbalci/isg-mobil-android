@@ -20,6 +20,10 @@ import androidx.compose.ui.unit.sp
 import com.alibbalci.isgmobil.ui.theme.BorderLight
 import com.alibbalci.isgmobil.ui.theme.Navy
 import com.alibbalci.isgmobil.ui.theme.Orange
+import com.alibbalci.isgmobil.ui.theme.CardBackground
+import com.alibbalci.isgmobil.ui.theme.RedSoft
+import com.alibbalci.isgmobil.ui.theme.RiskRed
+import com.alibbalci.isgmobil.ui.theme.TextSecondary
 
 @Composable
 fun RecentObservationCard(
@@ -32,7 +36,7 @@ fun RecentObservationCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        color = Color.White,
+        color = CardBackground,
         border = BorderStroke(
             width = 1.dp,
             color = BorderLight
@@ -55,7 +59,7 @@ fun RecentObservationCard(
 
             Text(
                 text = location,
-                color = Color.Gray,
+                color = TextSecondary,
                 fontSize = 12.sp
             )
 
@@ -69,12 +73,12 @@ fun RecentObservationCard(
 
                 Surface(
                     shape = RoundedCornerShape(12.dp),
-                    color = Color(0xFFFDE2E2)
+                    color = RedSoft
                 ) {
 
                     Text(
                         text = "• $riskText",
-                        color = Color(0xFFDC2626),
+                        color = RiskRed,
                         fontSize = 11.sp,
                         modifier = Modifier.padding(
                             horizontal = 9.dp,

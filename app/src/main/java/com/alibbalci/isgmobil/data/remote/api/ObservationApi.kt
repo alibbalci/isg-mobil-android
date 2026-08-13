@@ -1,14 +1,17 @@
 package com.alibbalci.isgmobil.data.remote.api
 
 import com.alibbalci.isgmobil.data.remote.dto.observation.ObservationAnalyzeResponseDto
+import com.alibbalci.isgmobil.data.remote.dto.observation.ObservationConfirmRequestDto
 import com.alibbalci.isgmobil.data.remote.dto.observation.ObservationResponseDto
 import com.alibbalci.isgmobil.data.remote.dto.observation.PageResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ObservationApi {
@@ -22,8 +25,19 @@ interface ObservationApi {
 
     @GET("api/observations")
     suspend fun getObservations(
-        @Query("page") page: Int = 0,
-        @Query("size") size: Int = 100
+        @Query("page") page: Int ,
+        @Query("size") size: Int
     ): PageResponseDto<ObservationResponseDto>
+
+    @POST("api/observations/{observationId}/confirm")
+    suspend fun confirmObservation(
+        @Path("observationId") observationId: Long,
+        @Body request: ObservationConfirmRequestDto
+    ): ObservationResponseDto
+
+    @GET("api/observations/{observationId}")
+    suspend fun getObservationById(
+        @Path("observationId") observationId: Long
+    ): ObservationResponseDto
 
 }

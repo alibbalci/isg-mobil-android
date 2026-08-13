@@ -31,6 +31,8 @@ import com.alibbalci.isgmobil.presentation.home.HomeScreen
 import com.alibbalci.isgmobil.presentation.home.HomeViewModel
 import com.alibbalci.isgmobil.presentation.observation.create.ObservationCreateScreen
 import com.alibbalci.isgmobil.presentation.observation.create.ObservationCreateViewModel
+import com.alibbalci.isgmobil.presentation.observation.detail.ObservationDetailScreen
+import com.alibbalci.isgmobil.presentation.observation.detail.ObservationDetailViewModel
 import com.alibbalci.isgmobil.presentation.observation.list.ObservationListScreen
 import com.alibbalci.isgmobil.presentation.profile.ProfileScreen
 import com.alibbalci.isgmobil.presentation.profile.ProfileViewModel
@@ -119,7 +121,8 @@ fun AppNavigation(
             companyCreateScreen(navController)
             companyDetailScreen(navController)
 
-            observationListScreen()
+            observationListScreen(navController)
+            observationDetailScreen(navController)
             observationCreateScreen(navController)
 
             profileScreen(navController)
@@ -409,16 +412,67 @@ private fun NavGraphBuilder.companyDetailScreen(
 /*
  * OBSERVATION LIST
  */
-private fun NavGraphBuilder.observationListScreen() {
+/*
+ * OBSERVATION LIST
+ */
+private fun NavGraphBuilder.observationListScreen(
+    navController: NavHostController
+) {
 
     composable(
         route = Routes.OBSERVATION_LIST
     ) {
 
-        ObservationListScreen()
+        ObservationListScreen(
+            onObservationClick = { observationId ->
+
+                navController.navigate(
+                    "${Routes.OBSERVATION_DETAIL}/$observationId"
+                )
+            }
+        )
     }
 }
 
+
+
+/*
+ * OBSERVATION DETAIL
+ */
+private fun NavGraphBuilder.observationDetailScreen(
+    navController: NavHostController
+) {
+
+    composable(
+        route =
+            "${Routes.OBSERVATION_DETAIL}/{observationId}",
+
+        arguments = listOf(
+            navArgument(
+                "observationId"
+            ) {
+                type = NavType.LongType
+            }
+        )
+    ) {
+
+        val observationDetailViewModel:
+                ObservationDetailViewModel =
+            hiltViewModel()
+
+        ObservationDetailScreen(
+            viewModel = observationDetailViewModel,
+
+            onBack = {
+                navController.popBackStack()
+            }
+        )
+    }
+}
+
+/*
+ * OBSERVATION CREATE
+ */
 /*
  * OBSERVATION CREATE
  */
@@ -440,11 +494,34 @@ private fun NavGraphBuilder.observationCreateScreen(
 
             onBack = {
                 navController.popBackStack()
+            },
+
+            onConfirmationSuccess = {
+
+                navController.navigate(
+                    Routes.OBSERVATION_LIST
+                ) {
+
+                    /*
+                     * Observation Create ekranını
+                     * back stack'ten siliyoruz.
+                     *
+                     * Böylece kullanıcı onaydan sonra
+                     * geri tuşuna bastığında eski,
+                     * tamamlanmış form ekranına dönmez.
+                     */
+                    popUpTo(
+                        Routes.OBSERVATION_CREATE
+                    ) {
+                        inclusive = true
+                    }
+
+                    launchSingleTop = true
+                }
             }
         )
     }
 }
-
 /*
  * PROFILE
  */

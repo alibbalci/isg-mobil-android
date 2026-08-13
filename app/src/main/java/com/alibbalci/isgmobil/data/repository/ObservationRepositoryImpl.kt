@@ -2,6 +2,7 @@ package com.alibbalci.isgmobil.data.repository
 
 import com.alibbalci.isgmobil.data.mapper.toDomain
 import com.alibbalci.isgmobil.data.remote.api.ObservationApi
+import com.alibbalci.isgmobil.data.remote.dto.observation.ObservationConfirmRequestDto
 import com.alibbalci.isgmobil.domain.model.Observation
 import com.alibbalci.isgmobil.domain.model.ObservationAnalysis
 import com.alibbalci.isgmobil.domain.repository.ObservationRepository
@@ -46,4 +47,37 @@ class ObservationRepositoryImpl @Inject constructor(
                 }
         }
     }
+
+    override suspend fun confirmObservation(
+        observationId: Long,
+        description: String,
+        selectedRiskCode: String
+    ): Result<Observation> {
+
+        return runCatching {
+
+            val request = ObservationConfirmRequestDto(
+                description = description,
+                selectedRiskCode = selectedRiskCode
+            )
+
+            observationApi
+                .confirmObservation(
+                    observationId = observationId,
+                    request = request
+                )
+                .toDomain()
+        }
+    }
+
+    override suspend fun getObservationById(observationId: Long): Result<Observation> {
+        return runCatching {
+            observationApi
+                .getObservationById(
+                    observationId = observationId
+                )
+                .toDomain()
+        }
+    }
+
 }

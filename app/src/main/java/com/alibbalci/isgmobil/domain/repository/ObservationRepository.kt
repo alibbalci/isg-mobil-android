@@ -1,9 +1,11 @@
 package com.alibbalci.isgmobil.domain.repository
 
+
 import com.alibbalci.isgmobil.domain.model.Observation
 import com.alibbalci.isgmobil.domain.model.ObservationAnalysis
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+
 
 interface ObservationRepository {
 
@@ -13,7 +15,17 @@ interface ObservationRepository {
     ): Result<ObservationAnalysis>
 
     suspend fun getObservations(
-        page: Int = 0,
-        size: Int = 100
+        page: Int ,
+        size: Int
     ): Result<List<Observation>>
+
+    suspend fun confirmObservation(
+        observationId: Long,
+        description: String,
+        selectedRiskCode: String
+    ): Result<Observation>
+
+    suspend fun getObservationById(
+        observationId: Long
+    ): Result<Observation>
 }

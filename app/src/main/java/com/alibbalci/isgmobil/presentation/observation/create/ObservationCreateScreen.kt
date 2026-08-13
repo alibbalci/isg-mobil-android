@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +40,6 @@ import com.alibbalci.isgmobil.presentation.observation.create.components.Company
 import com.alibbalci.isgmobil.presentation.observation.create.components.ObservationHeader
 import com.alibbalci.isgmobil.presentation.observation.create.components.PhotoSelectionCard
 import com.alibbalci.isgmobil.presentation.observation.create.components.RiskCandidateCard
-import com.alibbalci.isgmobil.ui.theme.AppBackground
 import com.alibbalci.isgmobil.ui.theme.Navy
 import com.alibbalci.isgmobil.ui.theme.Orange
 import com.alibbalci.isgmobil.ui.theme.RiskRed
@@ -49,12 +49,31 @@ import okhttp3.RequestBody.Companion.toRequestBody
 @Composable
 fun ObservationCreateScreen(
     viewModel: ObservationCreateViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onConfirmationSuccess: () -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
+
+    /*
+     * Backend onay işlemi başarılı olduğunda
+     * ViewModel:
+     *
+     * confirmationSuccess = true
+     *
+     * yapacak.
+     *
+     * Compose bu değişikliği görünce
+     * navigation callback'ini çalıştıracak.
+     */
+    LaunchedEffect(uiState.confirmationSuccess) {
+
+        if (uiState.confirmationSuccess) {
+            onConfirmationSuccess()
+        }
+    }
 
     var cameraPhotoUri by remember {
         mutableStateOf<Uri?>(null)
@@ -283,7 +302,7 @@ fun ObservationCreateScreen(
             )
 
             /*
-             * HATA MESAJI
+             * GENEL HATA MESAJI
              */
             uiState.errorMessage?.let { errorMessage ->
 
@@ -468,13 +487,14 @@ fun ObservationCreateScreen(
                     }
 
                 /*
-                 * RİSK + ÖNERİ SEÇİLDİYSE
+                 * RİSK SEÇİLDİYSE
                  * ONAY BUTONU
+                 *
+                 * selectedSuggestion artık backend'e
+                 * gönderilmediği için butonun görünmesi
+                 * için suggestion seçilmesini beklemiyoruz.
                  */
-                if (
-                    uiState.selectedRiskCode != null &&
-                    uiState.selectedSuggestion != null
-                ) {
+                if (uiState.selectedRiskCode != null) {
 
                     Spacer(
                         modifier =
@@ -485,23 +505,31 @@ fun ObservationCreateScreen(
                         onClick = {
 
                             /*
-                             * Bir sonraki aşamada
-                             * backend confirmation endpoint'ine:
+                             * Screen backend'i bilmiyor.
                              *
-                             * observationId
-                             * selectedRiskCode
-                             * selectedSuggestion
-                             *
-                             * göndereceğiz.
+                             * Sadece ViewModel'e:
+                             * "Kullanıcı onayladı"
+                             * bilgisini gönderiyor.
                              */
+                            viewModel.confirmObservation()
                         },
+
+                        /*
+                         * Backend isteği devam ederken
+                         * kullanıcı tekrar basamasın.
+                         */
+                        enabled =
+                            !uiState.isConfirming,
+
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
+
                         shape =
                             RoundedCornerShape(
                                 14.dp
                             ),
+
                         colors =
                             ButtonDefaults
                                 .buttonColors(
@@ -513,13 +541,40 @@ fun ObservationCreateScreen(
                     ) {
 
                         Text(
-                            text = "Seçimi Onayla",
+                            text =
+                                if (uiState.isConfirming) {
+                                    "Onaylanıyor..."
+                                } else {
+                                    "Seçimi Onayla"
+                                },
+
                             style =
                                 MaterialTheme
                                     .typography
                                     .labelLarge
                         )
                     }
+
+                    /*
+                     * CONFIRM İŞLEMİNE ÖZEL HATA
+                     */
+                    uiState.confirmationError
+                        ?.let { errorMessage ->
+
+                            Spacer(
+                                modifier =
+                                    Modifier.height(12.dp)
+                            )
+
+                            Text(
+                                text = errorMessage,
+                                color = RiskRed,
+                                style =
+                                    MaterialTheme
+                                        .typography
+                                        .bodyMedium
+                            )
+                        }
                 }
             }
 

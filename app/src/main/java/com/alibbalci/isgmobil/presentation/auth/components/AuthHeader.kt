@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -35,7 +37,7 @@ fun AuthHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(240.dp)
+            .heightIn(min = 240.dp)
             .background(Navy)
     ) {
 
@@ -45,10 +47,8 @@ fun AuthHeader(
         Box(
             modifier = Modifier
                 .size(150.dp)
-                .offset(
-                    x = 215.dp,
-                    y = (-22).dp
-                )
+                .align(Alignment.TopEnd)
+                .offset(x = 36.dp, y = (-22).dp)
                 .background(
                     color = Color.White.copy(
                         alpha = 0.07f
@@ -63,10 +63,8 @@ fun AuthHeader(
         Box(
             modifier = Modifier
                 .size(62.dp)
-                .offset(
-                    x = 265.dp,
-                    y = 18.dp
-                )
+                .align(Alignment.TopEnd)
+                .offset(x = 12.dp, y = 18.dp)
                 .background(
                     color = Orange.copy(
                         alpha = 0.09f
@@ -77,11 +75,14 @@ fun AuthHeader(
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .widthIn(max = 600.dp)
                 .padding(
                     start = 28.dp,
                     end = 28.dp,
-                    top = 34.dp
+                    top = 34.dp,
+                    bottom = 24.dp
                 )
         ) {
 

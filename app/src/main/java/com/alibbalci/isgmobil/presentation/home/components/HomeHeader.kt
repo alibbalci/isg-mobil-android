@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alibbalci.isgmobil.ui.theme.Navy
 import com.alibbalci.isgmobil.ui.theme.Orange
+import com.alibbalci.isgmobil.ui.theme.SuccessGreenLight
 
 @Composable
 fun HomeHeader(
@@ -37,17 +40,15 @@ fun HomeHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .heightIn(min = 180.dp)
             .background(Navy)
     ) {
 
         Box(
             modifier = Modifier
                 .size(150.dp)
-                .offset(
-                    x = 220.dp,
-                    y = (-35).dp
-                )
+                .align(Alignment.TopEnd)
+                .offset(x = 34.dp, y = (-35).dp)
                 .background(
                     Color.White.copy(alpha = 0.07f),
                     CircleShape
@@ -57,10 +58,8 @@ fun HomeHeader(
         Box(
             modifier = Modifier
                 .size(80.dp)
-                .offset(
-                    x = 250.dp,
-                    y = 30.dp
-                )
+                .align(Alignment.TopEnd)
+                .offset(x = 10.dp, y = 30.dp)
                 .background(
                     Orange.copy(alpha = 0.09f),
                     CircleShape
@@ -70,10 +69,13 @@ fun HomeHeader(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .widthIn(max = 840.dp)
+                .align(Alignment.Center)
                 .padding(
                     start = 22.dp,
                     end = 22.dp,
-                    top = 26.dp
+                    top = 26.dp,
+                    bottom = 24.dp
                 )
         ) {
 
@@ -115,7 +117,7 @@ fun HomeHeader(
                             modifier = Modifier
                                 .size(7.dp)
                                 .background(
-                                    Color(0xFF22C55E),
+                                    SuccessGreenLight,
                                     CircleShape
                                 )
                         )

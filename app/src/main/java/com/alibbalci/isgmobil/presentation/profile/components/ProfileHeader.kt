@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,17 +35,15 @@ fun ProfileHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp)
+            .heightIn(min = 220.dp)
             .background(Navy)
     ) {
 
         Box(
             modifier = Modifier
                 .size(160.dp)
-                .offset(
-                    x = 220.dp,
-                    y = (-40).dp
-                )
+                .align(Alignment.TopEnd)
+                .offset(x = 34.dp, y = (-40).dp)
                 .background(
                     Color.White.copy(alpha = 0.06f),
                     CircleShape
@@ -54,7 +53,7 @@ fun ProfileHeader(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 30.dp),
+                .padding(top = 30.dp, start = 20.dp, end = 20.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -87,7 +86,8 @@ fun ProfileHeader(
                 },
                 color = Color.White,
                 fontSize = 21.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                maxLines = 2
             )
 
             Spacer(

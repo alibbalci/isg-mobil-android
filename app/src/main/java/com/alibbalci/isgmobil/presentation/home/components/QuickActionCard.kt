@@ -20,6 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.alibbalci.isgmobil.ui.theme.BorderLight
 import com.alibbalci.isgmobil.ui.theme.Navy
+import com.alibbalci.isgmobil.ui.theme.CardBackground
+import com.alibbalci.isgmobil.ui.theme.InputBackground
 
 @Composable
 fun QuickActionCard(
@@ -35,7 +37,7 @@ fun QuickActionCard(
                 onClick()
             },
         shape = RoundedCornerShape(14.dp),
-        color = Color.White,
+        color = CardBackground,
         border = BorderStroke(
             width = 1.dp,
             color = BorderLight
@@ -49,7 +51,7 @@ fun QuickActionCard(
 
             Surface(
                 shape = RoundedCornerShape(10.dp),
-                color = Color(0xFFF8F9FC)
+                color = InputBackground
             ) {
 
                 Icon(

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +33,8 @@ import com.alibbalci.isgmobil.presentation.profile.components.ProfileActionItem
 import com.alibbalci.isgmobil.presentation.profile.components.ProfileHeader
 import com.alibbalci.isgmobil.presentation.profile.components.ProfileInfoCard
 import com.alibbalci.isgmobil.ui.theme.Orange
+import com.alibbalci.isgmobil.ui.theme.AppBackground
+import com.alibbalci.isgmobil.ui.theme.RiskRed
 
 @Composable
 fun ProfileScreen(
@@ -45,7 +48,7 @@ fun ProfileScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(AppBackground)
             .verticalScroll(
                 rememberScrollState()
             )
@@ -62,6 +65,8 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .widthIn(max = 720.dp)
+                .align(Alignment.CenterHorizontally)
                 .padding(
                     horizontal = 20.dp,
                     vertical = 22.dp
@@ -212,11 +217,11 @@ fun ProfileScreen(
                 colors =
                     ButtonDefaults.buttonColors(
                         containerColor =
-                            Color(0xFFDC2626),
+                            RiskRed,
                         contentColor =
                             Color.White,
                         disabledContainerColor =
-                            Color(0xFFDC2626)
+                            RiskRed
                                 .copy(alpha = 0.45f)
                     )
             ) {
